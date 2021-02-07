@@ -4,12 +4,14 @@ exports.getPins = async (req, res, next) => {
     try {
         let locations;
         console.log("getPins req.query: ",req.query);
+        let filter=JSON.parse(req.query.filter);
+        let bounds=JSON.parse(req.query.bounds);
         if (req.query.filter.schedule === 'PAST') {
             locations = await Activity.find({
                 'location':
-                    {'$geoWithin': {$box: [[req.query.bounds.southwest.lng, req.query.bounds.southwest.lat], [req.query.bounds.northeast.lng, req.query.northeast.lat]]}},
-                typeOfRelief: {$in: [...req.query.filter.typeOfRelief]},
-                orgName: req.query.filter.orgName,
+                    {'$geoWithin': {$box: [[bounds.southwest.lng, bounds.southwest.lat], [bounds.northeast.lng, bounds.northeast.lat]]}},
+                typeOfRelief: {$in: [...filter.typeOfRelief]},
+                orgName: filter.orgName,
                 supplyDate: {$lte: Date.now()}
             }, 'location -_id');
             console.log("getPins if block")
@@ -17,9 +19,9 @@ exports.getPins = async (req, res, next) => {
         else{
             locations = await Activity.find({
                 'location':
-                    {'$geoWithin': {$box: [[req.query.bounds.southwest.lng, req.query.bounds.southwest.lat], [req.query.bounds.northeast.lng, req.query.northeast.lat]]}},
-                typeOfRelief: {$in: [...req.query.filter.typeOfRelief]},
-                orgName: req.query.filter.orgName,
+                    {'$geoWithin': {$box: [[bounds.southwest.lng, bounds.southwest.lat], [bounds.northeast.lng, bounds.northeast.lat]]}},
+                typeOfRelief: {$in: [...filter.typeOfRelief]},
+                orgName: filter.orgName,
                 supplyDate: {$gt: Date.now()}
             }, 'location -_id');
             console.log("getPins else block")
