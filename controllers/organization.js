@@ -26,17 +26,17 @@ exports.getOrgs=async(req,res,next)=>{
         res.status(500).send({message: "Sorry! Database Error"});
     }
 }
-exports.patchOrgdetails=async(req,res,next)=>{
-    try{
-        console.log("patchOrgdetails req.body: ",req.body);
-        let org=await Organization.findOne({orgName:req.body.orgName});
-        if(!org){
-            return res.status(400).send({message:"This organization is not registered yet."})
-        }
-        await Organization.updateOne({orgName:req.body.orgName},{...req.body});
-        res.status(200).send();
-    }catch(e){
-        console.log("patchOrgdetails error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"});
-    }
-}
+// exports.patchOrgdetails=async(req,res,next)=>{
+//     try{
+//         console.log("patchOrgdetails req.body: ",req.body);
+//         let org=await Organization.findOne({orgName:req.body.orgName});
+//         if(!org){
+//             return res.status(400).send({message:"This organization is not registered yet."})
+//         }
+//         await Organization.updateOne({orgName:req.body.orgName},{...req.body});
+//         res.status(200).send();
+//     }catch(e){
+//         console.log("patchOrgdetails error: ", e);
+//         res.status(500).send({message: "Sorry! Database Error"});
+//     }
+// }
