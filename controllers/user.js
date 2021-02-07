@@ -18,6 +18,7 @@ exports.postLogin = async (req, res, next) => {
         console.log("postLogin updatedUser: ", updatedUser);
         return res.status(200).send(token);
     } catch (e) {
+        console.log("postLogin error: ", e);
         res.status(500).send({message: "Sorry! Database Error"})
     }
 }

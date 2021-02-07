@@ -21,15 +21,12 @@ const organizationSchema = new Schema({
         },
         email:{
             type:String,
-            required:true,
         },
         website:{
             type:String,
-            default:'https://www.google.com',
         },
         facebook:{
             type:String,
-            default:'https://www.facebook.com',
         }
     }
 });

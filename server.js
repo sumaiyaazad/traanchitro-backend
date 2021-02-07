@@ -10,6 +10,7 @@ const organizationRoutes=require('./routes/organization')
 const userRoutes=require('./routes/user')
 const locationRoutes=require('./routes/location')
 
+
 connection();
 
 

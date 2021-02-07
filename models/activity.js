@@ -12,7 +12,7 @@ const activitySchema = new Schema({
     typeOfRelief:[
         String,
     ],
-    coordinates:{
+    location:{
         lat:{
             type:Number,
             required:true
