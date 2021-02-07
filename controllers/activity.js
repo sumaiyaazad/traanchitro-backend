@@ -3,12 +3,11 @@ const Activity = require('../models/activity')
 
 exports.getOrgdetails = async (req, res, next) => {
     try {
-        let orgName=JSON.parse(req.query.orgName);
-        let org = await Organization.findOne({orgName: orgName}, '-_id -__v')
+        let org = await Organization.findOne({orgName: req.query.orgName}, '-_id -__v')
         if (!org) {
             return req.status(400).send({message: "This organization is not registered yet."})
         }
-        let activity = await Activity.find({orgName: orgName}, '-_id -__v');
+        let activity = await Activity.find({orgName: req.query.orgName}, '-_id -__v');
         res.send({organization: {...org._doc}, activities: [...activity]})
     } catch (e) {
         console.log("getOrgDetails error: ", e);
