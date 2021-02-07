@@ -1,5 +1,6 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const cors = require('cors');
 const bodyParser=require('body-parser');
 
 const connection=require('./db/mongoose');
@@ -13,7 +14,7 @@ const locationRoutes=require('./routes/location')
 
 connection();
 
-
+app.use(cors())
 app.use(bodyParser.json());
 app.use(organizationRoutes);
 app.use(activityRoutes);
