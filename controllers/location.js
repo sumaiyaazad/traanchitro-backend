@@ -28,7 +28,7 @@ exports.getPins = async (req, res, next) => {
             console.log("getPins else block")
         }
         console.log('getPins locations: ', locations);
-        return res.status(200).send(locations)
+        return res.status(200).send({locations:locations})
     } catch (e) {
         console.log("getPins error: ", e);
         res.status(500).send({message: "Sorry! Database Error"});
