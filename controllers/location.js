@@ -6,7 +6,7 @@ exports.getPins = async (req, res, next) => {
         console.log("getPins req.query: ",req.query);
         let filter=JSON.parse(req.query.filter);
         let bounds=JSON.parse(req.query.bounds);
-        let box=[[bounds.southwest.lat, bounds.southwest.lng], [bounds.northeast.lat, bounds.northeast.lng]]
+        let box=[[bounds.southwest.lng, bounds.southwest.lat], [bounds.northeast.lng, bounds.northeast.lat]]
         if (filter.schedule === 'PAST') {
             locations = await Activity.find({
                 'location':
