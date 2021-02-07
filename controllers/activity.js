@@ -3,11 +3,12 @@ const Activity = require('../models/activity')
 
 exports.getOrgdetails = async (req, res, next) => {
     try {
-        let org = await Organization.findOne({orgName: req.query.orgName}, '-_id -__v')
+        let orgName=JSON.parse(req.query.orgName);
+        let org = await Organization.findOne({orgName: orgName}, '-_id -__v')
         if (!org) {
             return req.status(400).send({message: "This organization is not registered yet."})
         }
-        let activity = await Activity.find({orgName: req.query.orgName}, '-_id -__v');
+        let activity = await Activity.find({orgName: orgName}, '-_id -__v');
         res.send({organization: {...org._doc}, activities: [...activity]})
     } catch (e) {
         console.log("getOrgDetails error: ", e);
@@ -17,21 +18,23 @@ exports.getOrgdetails = async (req, res, next) => {
 exports.getActivities = async (req, res, next) => {
     try {
         let activity;
-        console.log('getActivities req.query: ',req.query.filter.schedule);
-        if (req.query.filter.schedule === 'PAST') {
+        let filter=JSON.parse(req.query.filter);
+        let location=JSON.parse(req.query.location);
+        console.log('getActivities query: ',filter.schedule);
+        if (filter.schedule === 'PAST') {
             activity = await Activity.find({
-                    typeOfRelief: {$in: [...req.query.filter.typeOfRelief]},
-                    orgName: req.query.filter.orgName,
-                    location: req.query.location,
+                    typeOfRelief: {$in: [...filter.typeOfRelief]},
+                    orgName: filter.orgName,
+                    location: location,
                     supplyDate: {$lte: Date.now()}
                 },
                 '-_id -__v')
             return res.send({activities: [...activity]})
         }
         activity = await Activity.find({
-                typeOfRelief: {$in: [...req.query.filter.typeOfRelief]},
-                orgName: req.query.filter.orgName,
-                location: req.query.location,
+                typeOfRelief: {$in: [...filter.typeOfRelief]},
+                orgName: filter.orgName,
+                location: location,
                 supplyDate: {$gt: Date.now()}
             },
             '-_id -__v')
