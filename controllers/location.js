@@ -6,10 +6,11 @@ exports.getPins = async (req, res, next) => {
         console.log("getPins req.query: ",req.query);
         let filter=JSON.parse(req.query.filter);
         let bounds=JSON.parse(req.query.bounds);
+        let box=[[bounds.southwest.lat, bounds.southwest.lng], [bounds.northeast.lat, bounds.northeast.lng]]
         if (req.query.filter.schedule === 'PAST') {
             locations = await Activity.find({
                 'location':
-                    {'$geoWithin': {$box: [[bounds.southwest.lng, bounds.southwest.lat], [bounds.northeast.lng, bounds.northeast.lat]]}},
+                    {'$geoWithin': {$box:box }},
                 typeOfRelief: {$in: [...filter.typeOfRelief]},
                 orgName: filter.orgName,
                 supplyDate: {$lte: Date.now()}
@@ -19,7 +20,7 @@ exports.getPins = async (req, res, next) => {
         else{
             locations = await Activity.find({
                 'location':
-                    {'$geoWithin': {$box: [[bounds.southwest.lng, bounds.southwest.lat], [bounds.northeast.lng, bounds.northeast.lat]]}},
+                    {'$geoWithin': {$box: box}},
                 typeOfRelief: {$in: [...filter.typeOfRelief]},
                 orgName: filter.orgName,
                 supplyDate: {$gt: Date.now()}
