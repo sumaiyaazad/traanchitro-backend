@@ -8,10 +8,10 @@ exports.getOrgdetails = async (req, res, next) => {
             return req.status(400).send({message: "This organization is not registered yet."})
         }
         let activity = await Activity.find({orgName: req.query.orgName}, '-_id -__v');
-        res.send({organization: {...org._doc}, activities: [...activity]})
+        return res.send({organization: {...org._doc}, activities: [...activity]})
     } catch (e) {
         console.log("getOrgDetails error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"})
+        return res.status(500).send({message: "Sorry! Database Error"})
     }
 }
 exports.getActivities = async (req, res, next) => {

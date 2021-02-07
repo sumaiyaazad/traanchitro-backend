@@ -17,7 +17,7 @@ const organizationSchema = new Schema({
             type:String,
             required:true,
             minLength:11,
-            maxLength:11,
+            maxLength:14,
         },
         email:{
             type:String,
