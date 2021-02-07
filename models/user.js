@@ -20,6 +20,11 @@ const userSchema = new Schema({
         trim:true,
         default:"",
     },
+    orgName:{
+        type:String,
+        required:true,
+        ref:'Organization'
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);

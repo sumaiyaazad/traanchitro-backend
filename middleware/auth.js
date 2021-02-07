@@ -12,10 +12,11 @@ module.exports = async (req, res, next) => {
             return res.status(400).send({message:"Sorry! Your are not authenticated"});
         }
         let user=await User.findOne({token:token});
-        if(decodedToken.username!==user.username){
+        if(decodedToken.username!==user.username || decodedToken.orgName!==user.orgName){
             return res.status(400).send({message:"Sorry! Your are not authenticated"});
         }
         req.username = decodedToken.username;
+        req.orgName=decodedToken.orgName;
         next();
     } catch (e) {
         return res.status(400).send({...e,"message":"Invalid Authentication"});

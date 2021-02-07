@@ -8,18 +8,20 @@ exports.postLogin = async (req, res, next) => {
         if (!user) {
             return res.status(400).send({message: "Please insert valid username and password"});
         }
+        console.log("postLogin found user: ",user);
         let token = jwt.sign(
             {
-                username: req.body.username
+                username: req.body.username,
+                orgName:user.orgName
             },
             process.env.private_key,
         );
-        let updatedUser = await user.updateOne({token: token});
-        console.log("postLogin updatedUser: ", updatedUser);
+        await user.updateOne({token: token});
+        //console.log("postLogin updatedUser: ", updatedUser);
         return res.status(200).send({token:token});
     } catch (e) {
         console.log("postLogin error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"})
+        return res.status(500).send({message: "Sorry! Database Error"})
     }
 }
 exports.postLogout = async (req, res, next) => {
@@ -35,14 +37,15 @@ exports.postLogout = async (req, res, next) => {
         return res.status(200).send();
     } catch (e) {
         console.log("postLogout error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"})
+        return res.status(500).send({message: "Sorry! Database Error"})
     }
 }
 exports.postActivity = async (req, res, next) => {
     try {
         console.log(req.body);
         let activity = new Activity({
-            ...req.body
+            ...req.body,
+            orgName:req.orgName
         })
         console.log("postActivity activity: ", activity);
         let newActivity = await activity.save();
@@ -50,6 +53,6 @@ exports.postActivity = async (req, res, next) => {
         return res.status(200).send();
     } catch (e) {
         console.log("postActivity error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"})
+        return res.status(500).send({message: "Sorry! Database Error"})
     }
 }

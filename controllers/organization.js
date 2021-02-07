@@ -34,9 +34,9 @@ exports.patchOrgdetails=async(req,res,next)=>{
             return res.status(400).send({message:"This organization is not registered yet."})
         }
         await Organization.updateOne({orgName:req.body.orgName},{...req.body});
-        res.status(200).send();
+        return res.status(200).send();
     }catch(e){
         console.log("patchOrgdetails error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"});
+        return res.status(500).send({message: "Sorry! Database Error"});
     }
 }
