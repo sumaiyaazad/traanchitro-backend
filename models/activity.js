@@ -7,6 +7,7 @@ const activitySchema = new Schema({
     orgName: {
         type: String,
         required:true,
+        trim:true,
         ref:'Organization'
     },
     typeOfRelief:[
@@ -27,9 +28,9 @@ const activitySchema = new Schema({
         default:Date.now(),
     },
     contents:[{
-        item:String,
-        quantity:String,
-        description:String
+        item:{type:String,trim:true},
+        quantity:{type:String,trim:true},
+        description:{type:String,trim:true}
     }]
 });
 

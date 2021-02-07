@@ -22,6 +22,7 @@ const userSchema = new Schema({
     },
     orgName:{
         type:String,
+        trim:true,
         required:true,
         ref:'Organization'
     }
