@@ -7,7 +7,7 @@ exports.getPins = async (req, res, next) => {
         let filter=JSON.parse(req.query.filter);
         let bounds=JSON.parse(req.query.bounds);
         let box=[[bounds.southwest.lat, bounds.southwest.lng], [bounds.northeast.lat, bounds.northeast.lng]]
-        if (req.query.filter.schedule === 'PAST') {
+        if (filter.schedule === 'PAST') {
             locations = await Activity.find({
                 'location':
                     {'$geoWithin': {$box:box }},
