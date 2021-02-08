@@ -22,26 +22,26 @@ exports.getPins = async (req, res, next) => {
             locations = await Activity.find({
                 ...sendObject,
                 supplyDate: {$lte: Date.now()}
-            }, 'location -_id');
+            }, 'location -_id').distinct('location');
             console.log("getPins if block")
         }
         else if(filter.schedule === 'SCHEDULED'){
             locations = await Activity.find({
                 ...sendObject,
                 supplyDate: {$gt: Date.now()}
-            }, 'location -_id');
+            }, 'location -_id').distinct('location');
             console.log("getPins else if block")
         }
         else{
             locations = await Activity.find({
                 ...sendObject
-            }, 'location -_id');
-            console.log("getPins else if block")
+            }, 'location -_id').distinct('location');
+            console.log("getPins else  block")
         }
         console.log('getPins locations: ', locations);
         return res.status(200).send({locations:locations})
     } catch (e) {
         console.log("getPins error: ", e);
-        res.status(500).send({message: "Sorry! Database Error"});
+        return res.status(500).send({message: "Sorry! Database Error"});
     }
 }
