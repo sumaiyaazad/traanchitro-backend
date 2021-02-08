@@ -19,25 +19,33 @@ exports.getActivities = async (req, res, next) => {
         let activity;
         let filter=JSON.parse(req.query.filter);
         let location=JSON.parse(req.query.location);
-        console.log('getActivities query: ',filter.schedule);
-        if (filter.schedule === 'PAST') {
-            activity = await Activity.find({
-                    typeOfRelief: {$in: [...filter.typeOfRelief]},
-                    orgName: filter.orgName,
-                    location: location,
-                    supplyDate: {$lte: Date.now()}
-                },
-                '-_id -__v')
-            return res.send({activities: [...activity]})
+        let orgNameArray=[];
+        (await Organization.find({},'orgName -_id')).forEach(e=>orgNameArray.push(e.orgName));
+        orgNameArray=(filter.orgName===null? orgNameArray : [filter.orgName]);
+        let typeOfReliefArray=(filter.typeOfRelief.length===0?['FOOD','PPE','SANITIZER','MASK','GLOVE']:filter.typeOfRelief)
+        let sendObject={
+            typeOfRelief:{$in:[...typeOfReliefArray]},
+            orgName:{$in:[...orgNameArray]},
+            location:location
         }
-        activity = await Activity.find({
-                typeOfRelief: {$in: [...filter.typeOfRelief]},
-                orgName: filter.orgName,
-                location: location,
+        if(filter.schedule==='PAST'){
+            activity=await Activity.find({
+                ...sendObject,
+                supplyDate: {$lte: Date.now()}
+            })
+        }
+        else if(filter.schedule==='SCHEDULED'){
+            activity=await Activity.find({
+                ...sendObject,
                 supplyDate: {$gt: Date.now()}
-            },
-            '-_id -__v')
-        return res.send({activities: [...activity]})
+            })
+        }
+        else{
+            activity=await Activity.find({
+                ...sendObject
+            })
+        }
+        return res.status(200).send({activities:activity});
     } catch (e) {
         console.log("getActivities error: ", e);
         res.status(500).send({message: "Sorry! Database Error"})
