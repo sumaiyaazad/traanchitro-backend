@@ -1,31 +1,42 @@
 const Activity = require('../models/activity')
+const Organization=require('../models/organization')
 
 exports.getPins = async (req, res, next) => {
     try {
         let locations;
         console.log("getPins req.query: ",req.query);
         let filter=JSON.parse(req.query.filter);
+        console.log('hi');
         let bounds=JSON.parse(req.query.bounds);
-        let box=[[bounds.southwest.lng, bounds.southwest.lat], [bounds.northeast.lng, bounds.northeast.lat]]
+        let orgNameArray=[];
+        (await Organization.find({},'orgName -_id')).forEach(e=>orgNameArray.push(e.orgName));
+        orgNameArray=(filter.orgName===null? orgNameArray : [filter.orgName]);
+        let typeOfReliefArray=(filter.typeOfRelief.length===0?['FOOD','PPE','SANITIZER','MASK','GLOVE']:filter.typeOfRelief)
+        let box=[[bounds.southwest.lat, bounds.southwest.lng], [bounds.northeast.lat, bounds.northeast.lng]]
+        let sendObject={
+            location:{$geoWithin:{$box:box}},
+            typeOfRelief:{$in:[...typeOfReliefArray]},
+            orgName:{$in:[...orgNameArray]},
+        }
         if (filter.schedule === 'PAST') {
             locations = await Activity.find({
-                'location':
-                    {'$geoWithin': {$box:box }},
-                typeOfRelief: {$in: [...filter.typeOfRelief]},
-                orgName: filter.orgName,
+                ...sendObject,
                 supplyDate: {$lte: Date.now()}
             }, 'location -_id');
             console.log("getPins if block")
         }
-        else{
+        else if(filter.schedule === 'SCHEDULED'){
             locations = await Activity.find({
-                'location':
-                    {'$geoWithin': {$box: box}},
-                typeOfRelief: {$in: [...filter.typeOfRelief]},
-                orgName: filter.orgName,
+                ...sendObject,
                 supplyDate: {$gt: Date.now()}
             }, 'location -_id');
-            console.log("getPins else block")
+            console.log("getPins else if block")
+        }
+        else{
+            locations = await Activity.find({
+                ...sendObject
+            }, 'location -_id');
+            console.log("getPins else if block")
         }
         console.log('getPins locations: ', locations);
         return res.status(200).send({locations:locations})
